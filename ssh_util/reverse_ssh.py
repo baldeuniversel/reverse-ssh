@@ -88,7 +88,7 @@ class ReverseSSH:
             else:
                 print(f"[✅] OpenSSH server installation detected on the local host {self.system}")
 
-            print(f"[+] Checking SSH status on the local host {self.system}...")
+            print(f"\n[+] Checking SSH status on the local host {self.system}...")
 
             # Check if ssh service is active
             result = self.run_cmd(["systemctl", "is-active", "--quiet", "ssh"], check=False, return_process=True)
@@ -124,7 +124,7 @@ class ReverseSSH:
         pub_fingerprint = ""
 
 
-        print(f"[+] Checking SSH key pair on the local host {self.system}...")
+        print(f"\n[+] Checking SSH key pair on the local host {self.system}...")
         
         if self.key_path.exists() and self.pub_key_path.exists():
    
@@ -199,7 +199,7 @@ class ReverseSSH:
         with open(self.pub_key_path) as f:
             public_key = f.read().strip()
 
-        print("[+] Checking if key is already authorized on remote host...")
+        print("\n[+] Checking if key is already authorized on remote host...")
 
         check_cmd = f'grep -Fxq "{public_key}" ~/.ssh/authorized_keys'
 
@@ -212,7 +212,7 @@ class ReverseSSH:
             print("[✅] Key already authorized on the remote host")
             return
 
-        print(f"[+] Copying public key from local host {self.system} to remote host...")
+        print(f"\n[+] Copying public key from local host {self.system} to remote host...")
 
         remote_cmd = (
             f"mkdir -p ~/.ssh && "
@@ -230,7 +230,7 @@ class ReverseSSH:
         Example: ssh -fNR <remote_bind_port>:localhost:<local_port> user@host -p <:remote_port>.
         """
 
-        print(f"[+] Starting reverse tunnel : remote_bind_port:{self.remote_bind_port} → local_port:{self.local_port}")
+        print(f"\n[+] Starting reverse tunnel : remote_bind_port:{self.remote_bind_port} → local_port:{self.local_port}")
 
         cmd = [
             "ssh", "-fNR",

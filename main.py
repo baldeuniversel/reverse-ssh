@@ -36,10 +36,10 @@ def main():
         ssh_client.push_key()
         ssh_client.start_reverse_tunnel()
 
-        print("\n[✅] Reverse SSH tunnel established successfully\n")
+        print("[✅] Reverse SSH tunnel established successfully\n")
 
     except Exception as e:
-        print(f"\n[!] Error : {e}\n")
+        print(f"[!] Error : {e}\n")
 
 if __name__ == "__main__":
     main()
