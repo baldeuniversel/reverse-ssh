@@ -10,7 +10,7 @@ A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, 
 * [Features](#-features)
 * [Installation](#-installation)
 * [Usage](#-usage)
-* [Options](#--options)
+* [Options](#options)
 * [How It Works](#-how-it-works)
 * [Stopping the Tunnel](#-stopping-the-tunnel)
 * [Security Considerations](#-security-considerations)
@@ -78,7 +78,7 @@ This opens port `1632` (SSH) of the **local machine**, accessible from port `842
 
 ---
 
-## ⚙️ Options
+## Options
 
 | Option          | Description                                           |
 | --------------- | ------------------------------------------------------|
