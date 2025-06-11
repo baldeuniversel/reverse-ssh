@@ -15,7 +15,7 @@ A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, 
 * [Stopping the Tunnel](#-stopping-the-tunnel)
 * [Security Considerations](#-security-considerations)
 * [Requirements](#-requirements)
-* [Troubleshooting](#troubleshooting)
+* [Troubleshooting](#-troubleshooting)
 * [Contributing](#-contributing)
 * [License](#-license)
 
@@ -131,7 +131,7 @@ kill <PID>
 
 ---
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 * ❌ *“Bad remote forwarding specification”* → Check port args in your `ssh` command
 * ❌ *“Permission denied”* → Ensure public key is authorized correctly on remote
