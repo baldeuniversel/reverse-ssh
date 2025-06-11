@@ -131,7 +131,7 @@ kill <PID>
 
 ---
 
-## 🛠️ Troubleshooting
+## 🧷 Troubleshooting
 
 * ❌ *“Bad remote forwarding specification”* → Check port args in your `ssh` command
 * ❌ *“Permission denied”* → Ensure public key is authorized correctly on remote
