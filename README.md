@@ -78,7 +78,7 @@ This opens port `1632` (SSH) of the **local machine**, accessible from port `842
 
 ---
 
-## Options
+## ⚙️ Options
 
 | Option          | Description                                           |
 | --------------- | ------------------------------------------------------|
