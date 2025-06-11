@@ -6,7 +6,7 @@ A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, 
 
 ## 📚 Table of Contents
 
-* [Overview](#overview)
+* [Overview](#-overview)
 * [Features](#-features)
 * [Installation](#-installation)
 * [Usage](#-usage)
