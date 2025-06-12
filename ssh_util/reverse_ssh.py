@@ -193,6 +193,10 @@ class ReverseSSH:
         """
 
         public_key = ""
+        check_cmd = ""
+        result = ""
+        remote_cmd = ""
+
 
         if not self.pub_key_path.exists():
             raise RuntimeError(f"[❌] Public key not found on the local host {self.system}")
@@ -216,7 +220,7 @@ class ReverseSSH:
         print(f"\n[+] Copying public key from local host {self.system} to remote host...")
 
         remote_cmd = (
-            f"mkdir -p ~/.ssh && "
+            f"mkdir -p ~/.ssh 2> /dev/null ; "
             f"echo '{public_key}' >> ~/.ssh/authorized_keys && "
             f'chmod 600 ~/.ssh/authorized_keys && chmod 700 ~/.ssh'
         )
