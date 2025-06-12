@@ -9,7 +9,7 @@ import sys
 
 def main():
     """
-    Command-line interface to configure and start a reverse SSH tunnel.
+    @overview Command-line interface to configure and start a reverse SSH tunnel.
     """
 
     parser = argparse.ArgumentParser(description="Reverse SSH Tunnel Setup Tool")
