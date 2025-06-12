@@ -1,7 +1,8 @@
-import json
 import os
+import json
 import signal
 from pathlib import Path
+import subprocess
 
 
 
@@ -58,21 +59,19 @@ class ReverseSSHRegistry:
 
 
 
-    def register_tunnel(self, bind_port:int, remote_host:str, remote_user:str, pid:int):
+    def register_tunnel(self, bind_port:int, remote_host:str, remote_user:str):
         """
         @overview Adds or updates a reverse SSH tunnel entry in the registry.
 
         :param bind_port {int}: Remote bind port used in the reverse tunnel.
         :param remote_host {str}: Remote SSH server address.
         :param remote_user {str}: Username used to connect to the remote server.
-        :param pid {int}: PID of the local SSH process maintaining the tunnel.
         """
 
         data_dict = self._read_registry()
         data_dict[str(bind_port)] = {
             "remote_host": remote_host,
-            "remote_user": remote_user,
-            "pid": pid
+            "remote_user": remote_user
         }
 
         self._write_registry(data_dict)
@@ -93,33 +92,45 @@ class ReverseSSHRegistry:
     def kill_tunnel(self, bind_port:int):
         """
         @overview Terminates the reverse SSH tunnel associated with the given bind port.
-
-        :param bind_port {int}: The bind port whose associated tunnel should be terminated.
+        Tries to use `PID` if available, otherwise falls back to searching the SSH process.
         """
 
+        # Declaration variables
         data_dict = self._read_registry()
         bind_port = str(bind_port)
+        the_pid = []
 
-        if bind_port not in data_dict:
-            print(f"[!] No active tunnel found for bind port {bind_port}")
-            return
-
-        pid = data_dict[bind_port]["pid"]
 
         try:
 
-            os.kill(pid, signal.SIGTERM)  # Attempt to terminate the SSH process
-            print(f"[✅] Killed tunnel with PID {pid} (bind port {bind_port})")
+            result = subprocess.run(
+                ["pgrep", "-f", f"{bind_port}:localhost"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True
+            )
 
-            del data_dict[bind_port]  # Remove entry from registry
+            the_pid = result.stdout.decode().split()
 
-            self._write_registry(data_dict)
+            if not the_pid:
+                print(f"[ ⚠️  ] No matching SSH process found for bind port {bind_port}")
 
-        except ProcessLookupError:
+            else:
 
-            # Process may already be gone — clean up stale entry
-            print(f"[⚠️] Process with PID {pid} not found. Removing from registry")
+                for found_pid in the_pid:
 
+                    try:
+                        os.kill(int(found_pid), signal.SIGTERM)
+                        print(f"[✅] Killed tunnel with PID {found_pid} (bind port {bind_port})")
+
+                    except ProcessLookupError:
+                        print(f"[ ⚠️  ] Process with PID {found_pid} already gone")
+
+        except subprocess.CalledProcessError:
+            print(f"[ ⚠️  ] Failed to find or kill process for bind port {bind_port}")
+
+        # In all cases, remove the entry from the registry
+        if bind_port in data_dict:
             del data_dict[bind_port]
 
-            self._write_registry(data_dict)
+        self._write_registry(data_dict)

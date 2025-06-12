@@ -3,6 +3,7 @@ import platform
 from pathlib import Path
 import shutil
 import sys
+from ssh_util.reverse_ssh_registry import ReverseSSHRegistry
 
 
 
@@ -237,11 +238,22 @@ class ReverseSSH:
             f"{self.remote_bind_port}:localhost:{self.local_port}",
             f"{self.remote_user}@{self.remote_host}",
             "-p", str(self.remote_port),
-            "-o", "ExitOnForwardFailure=yes"
+            "-o", "ExitOnForwardFailure=yes",
+            "-o", "StrictHostKeyChecking=no"
         ]
 
         try:
+
+            # Start the SSH reverse tunnel in the background
             subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # Register in registry
+            registry = ReverseSSHRegistry()
+            registry.register_tunnel(
+                bind_port=self.remote_bind_port,
+                remote_host=self.remote_host,
+                remote_user=self.remote_user
+            )
             
         except subprocess.CalledProcessError as e:
             print(f"[❌] Failed to start reverse tunnel.\n[stderr] : {e.stderr.decode().strip()}")
