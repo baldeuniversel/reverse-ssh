@@ -87,8 +87,8 @@ This opens port `1632` (SSH) of the **local machine**, accessible from port `842
 | `--remote-port`  | SSH port on the remote server (default: 22)           |
 | `--bind-port`    | Port to expose on the remote server (default: 8421)   |
 | `--local-port`   | Port to expose from the local machine (default : 1632)|
-| `--list-tunnel` | List active reverse SSH tunnels                       |
-| `--kill-tunnel`  | Kill a reverse SSH tunnel by bind port                |
+| `--list-tunnel`  | List active reverse SSH tunnels                       |
+| `--kill-tunnel`  | Kill a reverse SSH tunnel by bind port (nargs)        |
 
 ---
 

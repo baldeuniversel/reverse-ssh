@@ -22,7 +22,7 @@ def main():
 
     # For the PID associated with the remote bind
     parser.add_argument("--list-tunnel", action="store_true", help="List active reverse SSH tunnels")
-    parser.add_argument("--kill-tunnel", type=int, help="Kill a reverse SSH tunnel by bind port")
+    parser.add_argument("--kill-tunnel", type=int, nargs='+', help="Kill a reverse SSH tunnel by bind port (nargs)")
 
 
     args = parser.parse_args()
@@ -49,8 +49,10 @@ def main():
     if args.kill_tunnel is not None:
 
         registry = ReverseSSHRegistry()
-        registry.kill_tunnel(args.kill_tunnel)
-        
+
+        for bind_port in args.kill_tunnel:
+            registry.kill_tunnel(bind_port)
+
         sys.exit(0)
 
 
