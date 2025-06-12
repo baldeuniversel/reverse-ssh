@@ -39,7 +39,7 @@ class ReverseSSH:
 
 
 
-    def run_cmd(self, cmd:list, shell:bool=False, check=True, return_process=False):
+    def run_cmd(self, cmd:list, shell:bool=False, check=True, return_process=False) -> subprocess.CompletedProcess | str:
         """
         @overview Runs a system command and returns its output.
 

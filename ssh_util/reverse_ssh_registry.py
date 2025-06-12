@@ -16,7 +16,7 @@ class ReverseSSHRegistry:
     """
 
 
-    def __init__(self, path="/tmp/.reverse-ssh/reverse_ssh.json"):
+    def __init__(self, path:str="/tmp/.reverse-ssh/reverse_ssh.json"):
         """
         @overview Initializes the registry manager. Creates the directory and the JSON file if they don't exist.
 
@@ -48,7 +48,7 @@ class ReverseSSHRegistry:
 
 
 
-    def _write_registry(self, data_dict):
+    def _write_registry(self, data_dict:dict):
         """
         @overview Writes the given data to the JSON registry file.
 
@@ -79,7 +79,7 @@ class ReverseSSHRegistry:
 
 
 
-    def list_tunnel(self):
+    def list_tunnel(self) -> dict:
         """
         @overview Returns the current list of registered reverse SSH tunnels,
         filtering out any tunnels whose process is no longer active.
