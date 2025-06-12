@@ -21,26 +21,26 @@ def main():
     parser.add_argument("--local-port", type=int, default=1632, help="Local port to forward to (default: 1632)")
 
     # For the PID associated with the remote bind
-    parser.add_argument("--list-tunnels", action="store_true", help="List active reverse SSH tunnels")
+    parser.add_argument("--list-tunnel", action="store_true", help="List active reverse SSH tunnels")
     parser.add_argument("--kill-tunnel", type=int, help="Kill a reverse SSH tunnel by bind port")
 
 
     args = parser.parse_args()
 
 
-    if args.list_tunnels:
+    if args.list_tunnel:
 
         registry = ReverseSSHRegistry()
-        tunnels = registry.list_tunnels()
+        tunnel_dict = registry.list_tunnel()
 
-        if not tunnels:
+        if not tunnel_dict:
             print("[❗] No active reverse tunnel found")
 
         else:
 
             print("🔁 Active Reverse Tunnels : ")
 
-            for bind_port, info in tunnels.items():
+            for bind_port, info in tunnel_dict.items():
                 print(f"    - Bind Port: {bind_port}; Remote: {info['remote_user']}@{info['remote_host']}")
         
         sys.exit(0)

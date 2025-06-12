@@ -220,8 +220,8 @@ class ReverseSSH:
         print(f"\n[+] Copying public key from local host {self.system} to remote host...")
 
         remote_cmd = (
-            f"mkdir -p ~/.ssh 2> /dev/null ; "
-            f"echo '{public_key}' >> ~/.ssh/authorized_keys && "
+            f'mkdir -p ~/.ssh 2> /dev/null ; '
+            f'echo "{public_key}" >> ~/.ssh/authorized_keys && '
             f'chmod 600 ~/.ssh/authorized_keys && chmod 700 ~/.ssh'
         )
 
@@ -261,4 +261,4 @@ class ReverseSSH:
             
         except subprocess.CalledProcessError as e:
             print(f"[❌] Failed to start reverse tunnel.\n[stderr] : {e.stderr.decode().strip()}")
-            raise RuntimeError(f"[❌] Reverse SSH tunnel could not be established")
+            raise RuntimeError(f"Reverse SSH tunnel could not be established")

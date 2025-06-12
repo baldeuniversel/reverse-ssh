@@ -3,6 +3,7 @@ import json
 import signal
 from pathlib import Path
 import subprocess
+import sys
 
 
 
@@ -78,14 +79,43 @@ class ReverseSSHRegistry:
 
 
 
-    def list_tunnels(self):
+    def list_tunnel(self):
         """
-        @overview Returns the current list of registered reverse SSH tunnels.
+        @overview Returns the current list of registered reverse SSH tunnels,
+        filtering out any tunnels whose process is no longer active.
 
-        :return {dict}: Dictionary mapping bind ports to tunnel metadata.
+        :return {dict}: Dictionary mapping active bind ports to tunnel metadata.
         """
 
-        return self._read_registry()
+        data_dict = self._read_registry()
+        active_dict = {}
+
+
+        for bind_port, metadata in data_dict.items():
+
+            try:
+
+                result = subprocess.run(
+                    ["pgrep", "-f", f"{bind_port}:localhost"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+
+                if result.stdout.strip():  # If there's a PID, the process exists
+                    active_dict[bind_port] = metadata
+
+            except subprocess.SubprocessError:
+                print(f"[ ⚠️  ] Error checking status of port {bind_port}, assuming inactive")
+                sys.exit(1)
+
+
+        if active_dict != data_dict:
+            self._write_registry(active_dict)
+
+        else:
+            return data_dict
+
+        return active_dict
 
 
 
