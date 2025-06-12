@@ -1,0 +1,41 @@
+{
+    "terminal.integrated.cwd": "${workspaceFolder}",
+
+    "terminal.integrated.profiles.linux": {
+        "zsh": {
+            "path": "zsh",
+            "args": ["-c", "source ${workspaceFolder}/.venv/bin/activate && exec zsh"]
+        }
+    },
+    
+    "terminal.integrated.defaultProfile.linux": null,
+    "cSpell.words": [
+        "ajax",
+        "april",
+        "baldeuniversel",
+        "clarendon",
+        "cosima",
+        "datetime",
+        "december",
+        "february",
+        "firstname",
+        "godfield",
+        "Godfield",
+        "hindenburg",
+        "infanity",
+        "Infanity",
+        "january",
+        "july",
+        "june",
+        "laca",
+        "lastname",
+        "musylius",
+        "Notif",
+        "november",
+        "october",
+        "september",
+        "snell",
+        "snellRoundhand",
+    ],
+    "cSpell.language": "en,fr"
+}
