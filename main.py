@@ -56,6 +56,20 @@ def main():
         sys.exit(0)
 
 
+    if args.bind_port is not None:
+        
+        registry = ReverseSSHRegistry()
+        tunnel_dict = registry.list_tunnel()
+
+        if tunnel_dict:
+            
+            for bind_port, info in tunnel_dict.items():
+                
+                if int(bind_port) == int(args.bind_port):
+                    print(f"[❗] The bind port {bind_port} is already in use...")
+                    sys.exit(1)
+
+
     # Normal tunnel setup flow
     if not (args.host and args.user):
         parser.error(f"⛔ The following arguments are required for tunnel creation : --host and --user")

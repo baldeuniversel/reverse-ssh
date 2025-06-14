@@ -70,7 +70,7 @@ class ReverseSSHRegistry:
         """
 
         data_dict = self._read_registry()
-        data_dict[str(bind_port)] = {
+        data_dict[bind_port] = {
             "remote_host": remote_host,
             "remote_user": remote_user
         }
