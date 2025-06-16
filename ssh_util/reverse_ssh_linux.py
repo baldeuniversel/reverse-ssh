@@ -3,13 +3,14 @@ import platform
 from pathlib import Path
 import shutil
 import sys
-from ssh_util.reverse_ssh_registry import ReverseSSHRegistry
+import socket
+from ssh_util.reverse_ssh_registry_linux import ReverseSSHRegistryLinux
 
 
 
 
 
-class ReverseSSH:
+class ReverseSSHLinux:
     """
     A client for setting up reverse SSH tunnels from the local host to a remote host.
     This includes checking SSH server installation, generating SSH keys, pushing keys to the remote server,
@@ -39,6 +40,32 @@ class ReverseSSH:
 
 
 
+    @staticmethod
+    def has_internet_connection(host="8.8.8.8", port=53, timeout=3):
+        """
+        @overview Checks if the system has an active internet connection.
+
+        :param host {str}: IP address or hostname to test connectivity against (default is 8.8.8.8).
+        :param port {int}: Port number to use for the socket connection (default is 53).
+        :param timeout {int|float}: Timeout duration in seconds for the connection attempt (default is 3).
+
+        :return {bool}: `True` if the connection is successful (internet is accessible), `False` otherwise.
+        """
+
+        try:
+
+            socket.setdefaulttimeout(timeout)
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((host, port))
+
+            return True
+        
+        except socket.error:
+            return False
+
+
+
     def run_cmd(self, cmd:list, shell:bool=False, check=True, return_process=False) -> subprocess.CompletedProcess | str:
         """
         @overview Runs a system command and returns its output.
@@ -48,7 +75,7 @@ class ReverseSSH:
         :param check {bool}: To manage the raised errors (the exceptions).
         :param return_process {bool}: If True, return CompletedProcess object, else return stdout string.
 
-        :return {str}: stdout output as string
+        :return {str}: stdout output as string.
         """
 
         result = subprocess.run(cmd, shell=shell, check=check, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -60,10 +87,10 @@ class ReverseSSH:
 
 
 
-    def ensure_ssh_server(self):
+    def ensure_ssh_local(self):
         """
         @overview Ensures that the SSH server is installed and running on the local host.
-        Supports Linux (apt), macOS, and Windows (PowerShell).
+        Supports Linux (apt).
         """
 
         print(f"[+] Checking SSH server installation on the local host {self.system}...")
@@ -115,9 +142,9 @@ class ReverseSSH:
 
 
 
-    def validate_ssh_key_pair(self):
+    def _validate_ssh_key_pair_local(self):
         """
-        @overview Uses `ssh-keygen -l` to compare fingerprints of private and public SSH keys.
+        @overview Uses `ssh-keygen -l` to compare fingerprints of private and public SSH keys (local server).
         """
 
         # Declaration variables
@@ -152,14 +179,14 @@ class ReverseSSH:
 
 
 
-    def generate_ssh_key(self):
+    def generate_ssh_key_pair_local(self):
         """
         @overview Generates an SSH key pair if this one doesn't already exist (local host).
         Uses RSA 4096 bits and stores keys in ~/.ssh/ .
         """
 
         try:
-            self.validate_ssh_key_pair()
+            self._validate_ssh_key_pair_local()
 
         except (ValueError, FileNotFoundError) as err:
 
@@ -186,7 +213,7 @@ class ReverseSSH:
 
 
 
-    def push_key(self):
+    def push_ssh_pubkey_local(self):
         """
         @overview Pushes the local public key to the remote server's authorized_keys, if not already present.
         Ensures proper permissions on the remote server's .ssh directory.
@@ -196,15 +223,22 @@ class ReverseSSH:
         check_cmd = ""
         result = ""
         remote_cmd = ""
+        response_push_pubkey = ""
+
+
+        # Check internet connection
+        if not ReverseSSHLinux.has_internet_connection():
+            print(f"\n[❗] No internet connection detected. Remote SSH setup cannot proceed")
+            sys.exit(1)
 
 
         if not self.pub_key_path.exists():
-            raise RuntimeError(f"[❌] Public key not found on the local host {self.system}")
+            raise RuntimeError(f"[❌] SSH public key not found on the local host {self.system}")
 
         with open(self.pub_key_path) as f:
             public_key = f.read().strip()
 
-        print("\n[+] Checking if key is already authorized on remote host...")
+        print("\n[+] Checking if the local ssh public key is already authorized on the remote host...")
 
         check_cmd = f'grep -Fxq "{public_key}" ~/.ssh/authorized_keys'
 
@@ -214,22 +248,37 @@ class ReverseSSH:
         )
 
         if result.returncode == 0:
-            print("[✅] Key already authorized on the remote host")
+            print("[✅] SSH local public key is already authorized on the remote host")
             return
 
-        print(f"\n[+] Copying public key from local host {self.system} to remote host...")
+        print(f"[❌] SSH local public key has not been set on the remote host yet")
 
-        remote_cmd = (
-            f'mkdir -p ~/.ssh 2> /dev/null ; '
-            f'echo "{public_key}" >> ~/.ssh/authorized_keys && '
-            f'chmod 600 ~/.ssh/authorized_keys && chmod 700 ~/.ssh'
-        )
+        response_push_pubkey = input(f"\nWould you like to copy your SSH public key to the remote host ? : [y/n] ")
 
-        self.run_cmd(["ssh", f"{self.remote_user}@{self.remote_host}", "-p", str(self.remote_port), remote_cmd])
+        # 
+        if str(response_push_pubkey).strip() in ["y", "yes", "Y", "YES"]:
+
+            # Check internet connection
+            if not ReverseSSHLinux.has_internet_connection():
+                print(f"\n[❗] No internet connection detected. Remote SSH setup cannot proceed")
+                sys.exit(1)
+
+
+            print(f"\n[+] Copying ssh public key from local host {self.system} to remote host...")
+
+            remote_cmd = (
+                f'mkdir -p ~/.ssh 2> /dev/null ; '
+                f'echo "{public_key}" >> ~/.ssh/authorized_keys && '
+                f'chmod 600 ~/.ssh/authorized_keys && chmod 700 ~/.ssh'
+            )
+
+            self.run_cmd(["ssh", f"{self.remote_user}@{self.remote_host}", "-p", str(self.remote_port), remote_cmd])
+
+            print(f"[✅] SSH public key successfully deployed to remote host")
 
 
 
-    def start_reverse_tunnel(self):
+    def start_reverse_ssh_tunnel(self):
         """
         @overview Starts the reverse SSH tunnel from the remote host back to the local host.
         Example: ssh -fNR <remote_bind_port>:localhost:<local_port> user@host -p <:remote_port>.
@@ -248,12 +297,18 @@ class ReverseSSH:
 
         try:
 
+            # Check internet connection
+            if not ReverseSSHLinux.has_internet_connection():
+                print(f"\n[❗] No internet connection detected. Remote SSH setup cannot proceed")
+                sys.exit(1)
+
+
             # Start the SSH reverse tunnel in the background
             subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             # Register in registry
-            registry = ReverseSSHRegistry()
-            registry.register_tunnel(
+            registry = ReverseSSHRegistryLinux()
+            registry.register_ssh_tunnel(
                 bind_port=self.remote_bind_port,
                 remote_host=self.remote_host,
                 remote_user=self.remote_user

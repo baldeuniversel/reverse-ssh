@@ -9,7 +9,7 @@ import sys
 
 
 
-class ReverseSSHRegistry:
+class ReverseSSHRegistryLinux:
     """
     @overview Manages a JSON-based registry of reverse SSH tunnels, allowing them to be listed,
     registered, terminated cleanly. Stores state in a file located at /tmp/.reverse-ssh/reverse_ssh.json.
@@ -28,11 +28,11 @@ class ReverseSSHRegistry:
         self.registry_dir.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
 
         if not self.registry_path.exists():
-            self._write_registry({})  # Create empty registry if file does not exist
+            self._write_ssh_registry({})  # Create empty registry if file does not exist
 
 
 
-    def _read_registry(self) -> dict:
+    def _read_ssh_registry(self) -> dict:
         """
         @overview Loads and returns the JSON registry from disk.
 
@@ -48,7 +48,7 @@ class ReverseSSHRegistry:
 
 
 
-    def _write_registry(self, data_dict:dict):
+    def _write_ssh_registry(self, data_dict:dict):
         """
         @overview Writes the given data to the JSON registry file.
 
@@ -60,7 +60,7 @@ class ReverseSSHRegistry:
 
 
 
-    def register_tunnel(self, bind_port:int, remote_host:str, remote_user:str):
+    def register_ssh_tunnel(self, bind_port:int, remote_host:str, remote_user:str):
         """
         @overview Adds or updates a reverse SSH tunnel entry in the registry.
 
@@ -69,17 +69,17 @@ class ReverseSSHRegistry:
         :param remote_user {str}: Username used to connect to the remote server.
         """
 
-        data_dict = self._read_registry()
+        data_dict = self._read_ssh_registry()
         data_dict[bind_port] = {
             "remote_host": remote_host,
             "remote_user": remote_user
         }
 
-        self._write_registry(data_dict)
+        self._write_ssh_registry(data_dict)
 
 
 
-    def list_tunnel(self) -> dict:
+    def list_ssh_tunnel(self) -> dict:
         """
         @overview Returns the current list of registered reverse SSH tunnels,
         filtering out any tunnels whose process is no longer active.
@@ -87,7 +87,7 @@ class ReverseSSHRegistry:
         :return {dict}: Dictionary mapping active bind ports to tunnel metadata.
         """
 
-        data_dict = self._read_registry()
+        data_dict = self._read_ssh_registry()
         active_dict = {}
 
 
@@ -110,7 +110,7 @@ class ReverseSSHRegistry:
 
 
         if active_dict != data_dict:
-            self._write_registry(active_dict)
+            self._write_ssh_registry(active_dict)
 
         else:
             return data_dict
@@ -119,14 +119,14 @@ class ReverseSSHRegistry:
 
 
 
-    def kill_tunnel(self, bind_port:int):
+    def kill_ssh_tunnel(self, bind_port:int):
         """
         @overview Terminates the reverse SSH tunnel associated with the given bind port.
         Tries to use `PID` if available, otherwise falls back to searching the SSH process.
         """
 
         # Declaration variables
-        data_dict = self._read_registry()
+        data_dict = self._read_ssh_registry()
         bind_port = str(bind_port)
         the_pid = []
 
@@ -163,4 +163,4 @@ class ReverseSSHRegistry:
         if bind_port in data_dict:
             del data_dict[bind_port]
 
-        self._write_registry(data_dict)
+        self._write_ssh_registry(data_dict)
