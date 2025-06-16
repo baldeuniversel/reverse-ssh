@@ -80,15 +80,15 @@ This opens port `1632` (SSH) of the **local machine**, accessible from port `842
 
 ## 🔗 Options
 
-| Option                 | Description                                           |
-| ---------------------- | ----------------------------------------------------- |
-| `--host | -h`          | IP or hostname of the remote SSH server               |
-| `--user | -u`          | Username on the remote server                         |
-| `--remote-port | -rp`  | SSH port on the remote server (default: 1248)         |
-| `--bind-port | -bp`    | Port to expose on the remote server (default: 8421)   |
-| `--local-port | -lp`   | Port to expose from the local machine (default : 1632)|
-| `--list-tunnel | -lt`  | List active reverse SSH tunnels                       |
-| `--kill-tunnel | kt`   | Kill a reverse SSH tunnel by bind port (nargs)        |
+| Option                  | Description                                           |
+| ----------------------- | ----------------------------------------------------- |
+| `--host \| -h`          | IP or hostname of the remote SSH server               |
+| `--user \| -u`          | Username on the remote server                         |
+| `--remote-port \| -rp`  | SSH port on the remote server (default: 1248)         |
+| `--bind-port \| -bp`    | Port to expose on the remote server (default: 8421)   |
+| `--local-port \| -lp`   | Port to expose from the local machine (default : 1632)|
+| `--list-tunnel \| -lt`  | List active reverse SSH tunnels                       |
+| `--kill-tunnel \| kt`   | Kill a reverse SSH tunnel by bind port (nargs)        |
 
 ---
 
