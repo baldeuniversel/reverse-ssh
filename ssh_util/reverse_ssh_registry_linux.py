@@ -12,7 +12,7 @@ import sys
 class ReverseSSHRegistryLinux:
     """
     @overview Manages a JSON-based registry of reverse SSH tunnels, allowing them to be listed,
-    registered, terminated cleanly. Stores state in a file located at /tmp/.reverse-ssh/reverse_ssh.json.
+    registered, terminated cleanly. Stores state in a file located at /tmp/.reverse-ssh/reverse_ssh.json (by default).
     """
 
 
