@@ -114,8 +114,7 @@ kill <PID>
 
 Or via the program (e.g):
 ```
-python main.py --host 128.64.32.8 --user electra \
-    --remote-port 1248 --bind-port 8421 --local-port 1632
+python main.py --kill-tunnel 8421
 ```
 
 ---
