@@ -70,7 +70,7 @@ python main.py --host <REMOTE_HOST> --user <REMOTE_USER> \
 ### Example
 
 ```bash
-python main.py --host 128.64.32.8 --user electra \
+python main.py --host 128.64.32.8 --user universe \
     --remote-port 1248 --bind-port 8421 --local-port 1632
 ```
 
@@ -110,6 +110,12 @@ Find and kill the SSH process manually:
 ```bash
 ps aux | grep "ssh -fN"
 kill <PID>
+```
+
+Or via the program (e.g):
+```
+python main.py --host 128.64.32.8 --user electra \
+    --remote-port 1248 --bind-port 8421 --local-port 1632
 ```
 
 ---
