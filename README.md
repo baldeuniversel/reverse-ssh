@@ -165,4 +165,3 @@ This project is licensed under the MIT License. See [LICENSE](https://opensource
 ---
 
 © 2025 – Maintained by \[ Baldé Amadou \]
-
