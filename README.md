@@ -23,7 +23,7 @@ A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, 
 
 ## 📌 Overview
 
-This tool creates a **reverse SSH tunnel** from a local machine (e.g. laptop, Raspberry Pi, VM) to a remote SSH server, exposing a local port (e.g. SSH, HTTP, custom service) through the remote server's public IP.
+This tool creates a **reverse SSH tunnel** from a local machine (e.g. laptop, Raspberry Pi, VM) to a remote SSH server (**Linux** kernel), exposing a local port (e.g. SSH, HTTP, custom service) through the remote server's public IP.
 
 It’s useful for:
 
