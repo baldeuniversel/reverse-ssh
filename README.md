@@ -1,6 +1,6 @@
 # 🔁 Reverse SSH Tunnel - Python Utility
 
-A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, allowing you to expose a local service (like SSH) to a remote server (**Linux** kernel) – even behind NAT or a firewall.
+A lightweight Python utility to automate the setup of a **reverse SSH tunnel**, allowing you to expose a local service (**SSH**) to a remote server (**Linux** kernel) – even behind NAT or a firewall.
 
 ---
 
