@@ -134,7 +134,7 @@ python main.py --kill-tunnel 8421
 * Linux-based system with `apt`
 * Python 3.7+
 * `openssh-server` (installed automatically if missing)
-* Remote SSH server with access via key-based login
+* Remote SSH server (**Linux kernel**) with access via key-based login or not
 
 ---
 
